@@ -78,7 +78,9 @@ setup:
 ifeq (,$(VARPATH))
 	@ tar xvzf ./external/src/Box2D.tgz  -C ./external/src/
 	@ mkdir -p $(SOFT)/build296 
-	@ cd $(SOFT)/build296 ;  cmake ../ ;  make ; make install 
+	@ cd $(SOFT)/build296 ;  cmake ../ ;  make ; make install
+	@ patch -b -i ./b2Timer_h.patch ./external/src/Box2D/Box2D/Common/b2Timer.h 
+	@ patch -b -i ./b2Timer_cpp.patch ./external/src/Box2D/Box2D/Common/b2Timer.cpp
 endif
     
 static_target: $(OBJS)
