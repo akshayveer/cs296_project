@@ -12,15 +12,21 @@ SED	= sed
 DOXYGEN = doxygen
 ######################################
 # Project Name (generate executable with this name)
-TARGET = cs296_base
+TARGET = cs296_23_exe
+LIBTARGET= cs296_23_exelib
 
 # Project Paths
-PROJECT_ROOT=./
+PROJECT_ROOT=.
+#in below variable box2d software 
 EXTERNAL_ROOT=$(PROJECT_ROOT)/external
+#in below variable our project source files are stored
 SRCDIR = $(PROJECT_ROOT)/src
-OBJDIR = $(PROJECT_ROOT)/obj
-BINDIR = $(PROJECT_ROOT)/bin
+# in below varibale objects files are stored
+OBJDIR = $(PROJECT_ROOT)/myobjs
+#in below variable executables are stored
+BINDIR = $(PROJECT_ROOT)/mybins
 DOCDIR = $(PROJECT_ROOT)/doc
+LIBDIR = $(PROJECT_ROOT)/mylibs
 
 # Library Paths
 BOX2D_ROOT=$(EXTERNAL_ROOT)
@@ -55,20 +61,58 @@ WARN_FMT="${WARN_COLOR}%30s\n${NO_COLOR}"
 SRCS := $(wildcard $(SRCDIR)/*.cpp)
 INCS := $(wildcard $(SRCDIR)/*.hpp)
 OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
-
+VARPATH=$(shell find ./external/include  -name Box2D)
+SOFT=$(EXTERNAL_ROOT)/src/Box2D
+SHARED_LIB=TRUE
+REST=$(filter-out ./myobjs/main.o,$(OBJS))
 
 .PHONY: all setup doc clean distclean
 
-all: setup $(BINDIR)/$(TARGET)
+all: setup exe exelib
 
 setup:
-	@$(ECHO) "Setting up compilation..."
-	@mkdir -p obj
-	@mkdir -p bin
-
-$(BINDIR)/$(TARGET): $(OBJS)
-	@$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(notdir $@)"
-	@$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) 2> temp.log || touch temp.err
+	@$(ECHO) "Setting up compilation..." 
+	@mkdir -p myobjs
+	@mkdir -p mybins
+	@mkdir -p mylibs
+ifeq (,$(VARPATH))
+	@ tar xvzf ./external/src/Box2D.tgz  -C ./external/src/
+	@ mkdir -p $(SOFT)/build296 
+	@ cd $(SOFT)/build296 ;  cmake ../ ;  make ; make install 
+endif
+    
+static_target: $(OBJS)
+ifeq ($(SHARED_LIB),FALSE)
+	@ ar -cvq libCS296test.a $(REST)
+	@ mv  libCS296test.a  ./mylibs
+endif
+dynamic_target: $(OBJS)
+ifeq ($(SHARED_LIB),TRUE)
+	@ $(CC) -shared -o libCS296test.so $(REST) 
+	@mv  libCS296test.so  ./mylibs
+	@export LD_LIBRARY_PATH=./mylibs:$LD_LIBRARY_PATH
+endif
+	
+exe: setup $(OBJS)
+	@$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(notdir $(BINDIR)/$(TARGET))"
+	@$(CC) -o $(BINDIR)/$(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) 2> temp.log || touch temp.err
+	@if test -e temp.err; \
+	then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
+	elif test -s temp.log; \
+	then $(PRINTF) $(WARN_FMT) $(WARN_STRING) && $(CAT) temp.log; \
+	else $(PRINTF) $(OK_FMT) $(OK_STRING); \
+	fi;
+	@$(RM) -f temp.log temp.err
+	
+exelib: setup $(OBJS)
+	@$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(notdir $(BINDIR)/$(LIBTARGET))"
+ifeq ($(SHARED_LIB),FALSE)
+	@make static_target
+	@$(CC) -o $(BINDIR)/$(LIBTARGET)  $(LDFLAGS) ./myobjs/main.o  ./mylibs/libCS296test.a   $(LIBS)  2> temp.log || touch temp.err
+else
+	@make dynamic_target
+	@$(CC) -o $(BINDIR)/$(LIBTARGET) ./myobjs/main.o $(LDFLAGS) ./mylibs/libCS296test.so $(LIBS) 2> temp.log || touch temp.err
+endif
 	@if test -e temp.err; \
 	then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
 	elif test -s temp.log; \
@@ -77,11 +121,11 @@ $(BINDIR)/$(TARGET): $(OBJS)
 	fi;
 	@$(RM) -f temp.log temp.err
 
--include -include $(OBJS:.o=.d)
+-include $(OBJS:.o=.d)
 
-$(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
+$(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp 
 	@$(PRINTF) "$(MESG_COLOR)Compiling: $(NO_COLOR) $(FILE_COLOR) %25s$(NO_COLOR)" "$(notdir $<)"
-	@$(CC) $(CPPFLAGS) -c $< -o $@ -MD 2> temp.log || touch temp.err
+	@$(CC) $(CPPFLAGS) -fpic -c $< -o $@ -MD 2> temp.log || touch temp.err
 	@if test -e temp.err; \
 	then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
 	elif test -s temp.log; \
@@ -90,16 +134,14 @@ $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	fi;
 	@$(RM) -f temp.log temp.err
 
-doc:
-	@$(ECHO) -n "Generating Doxygen Documentation ...  "
-	@$(RM) -rf doc/html
-	@$(DOXYGEN) $(DOCDIR)/Doxyfile 2 > /dev/null
-	@$(ECHO) "Done"
-
 clean:
 	@$(ECHO) -n "Cleaning up..."
-	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~
+	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ ./myobjs ./mylibs ./mybins 
 	@$(ECHO) "Done"
 
 distclean: clean
 	@$(RM) -rf $(BINDIR) $(DOCDIR)/html
+	@$(ECHO) -n "Cleaning up..."
+	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ ./myobjs ./mylibs ./mybins
+	@$(RM) -rf  $(EXTERNAL_ROOT)/include/*	 $(EXTERNAL_ROOT)/lib/*  $(EXTERNAL_ROOT)/src/Box2D
+	@$(ECHO) "Done" 
