@@ -136,6 +136,12 @@ $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	fi;
 	@$(RM) -f temp.log temp.err
 
+doc:
+	@$(ECHO) -n "Generating Doxygen Documentation ...  "
+	@$(RM) -rf doc/html
+	@$(DOXYGEN) $(DOCDIR)/Doxyfile 2 > /dev/null
+	@$(ECHO) "Done"
+
 clean:
 	@$(ECHO) -n "Cleaning up..."
 	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ ./myobjs ./mylibs ./mybins 
