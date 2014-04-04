@@ -124,6 +124,9 @@ namespace cs296
     virtual void rotate_clock_wise(){}
     virtual void rotate_anti_clock_wise(){}
     virtual void stop(){}
+    virtual void release(){}
+    virtual void move_forward(){}
+    virtual void move_backward(){}
 
     //! Virtual destructors - amazing objects. Why are these necessary?
     virtual ~base_sim_t();

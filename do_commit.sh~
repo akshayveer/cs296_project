@@ -1,0 +1,4 @@
+#!/bin/bash
+cd cs296_base_code; make distclean; 
+git add *
+git commit -m $1  

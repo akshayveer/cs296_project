@@ -8,6 +8,9 @@
 //! Included in double quotes - the path to find these has to be given at compile time
 #include "callbacks.hpp"
 
+#include <iostream>
+using namespace std;
+
 #ifndef __APPLE__
 #include "GL/glui.h"
 #else
@@ -87,59 +90,77 @@ namespace cs296
     //! What are these?
     B2_NOT_USED(x);
     B2_NOT_USED(y);
+    if(key>'0' && key<'7') test->change_to_selected_body(key-'0');
+    else{
     
-    switch (key)
-    {
+      switch (key)
+      {
+        cout << key << endl;
 
-    case '1':
-      test->change_to_selected_body(1);
-      break;
+      case '1':
+        test->change_to_selected_body(1);
+        break;
 
-    case 'a':
-      test->rotate_anti_clock_wise();
-      break;
+      case '2':
+        test->change_to_selected_body(2);
+        break;
 
-    case 'c':
-      test->rotate_clock_wise();
-      break;
+      case 'a':
+        test->rotate_anti_clock_wise();
+        break;
 
-    case 's':
-      test->stop();
-      break;
+      case 'c':
+        test->rotate_clock_wise();
+        break;
 
-    case 27:
-      exit(0);
-      break;
-      
-      //! Press 'z' to zoom out.
-    case 'z':
-      view_zoom = b2Min(1.1f * view_zoom, 20.0f);
-      resize_cb(width, height);
-      break;
-      
-    //! Press 'x' to zoom in.
-    case 'x':
-      view_zoom = b2Max(0.9f * view_zoom, 0.02f);
-      resize_cb(width, height);
-      break;
-      
-    //! Press 'r' to reset.
-    case 'r':
-      delete test;
-      test = entry->create_fcn();
-      break;
-      
-      //! Press 'p' to pause.
-    case 'p':
-      settings.pause = !settings.pause;
-      break;
-      
-      //! The default case. Why is this needed?
-    default:
-      if (test)
-	{
-	  test->keyboard(key);
-	}
+      case 's':
+        test->stop();
+        break;
+
+      case 'u':
+        test->release();
+        break;
+
+      case 'b':
+        test->move_forward();
+        break;
+
+      case 'f':
+        test->move_backward();
+        break;
+
+      case 27:
+        exit(0);
+        break;
+        
+        //! Press 'z' to zoom out.
+      case 'z':
+        view_zoom = b2Min(1.1f * view_zoom, 20.0f);
+        resize_cb(width, height);
+        break;
+        
+      //! Press 'x' to zoom in.
+      case 'x':
+        view_zoom = b2Max(0.9f * view_zoom, 0.02f);
+        resize_cb(width, height);
+        break;
+        
+      //! Press 'r' to reset.
+      case 'r':
+        delete test;
+        test = entry->create_fcn();
+        break;
+        
+        //! Press 'p' to pause.
+      case 'p':
+        settings.pause = !settings.pause;
+        break;
+        
+        //! The default case. Why is this needed?
+      default:
+        if (test) test->keyboard(key);
+  	 
+      }
     }
   }
   

@@ -22,7 +22,7 @@ namespace cs296
     int body_index;
 
     //! \brief base body and arm1 joint 
-    b2RevoluteJoint* r_joint1;
+    b2RevoluteJoint* r_joint[6];
 
   public:
     
@@ -42,21 +42,34 @@ namespace cs296
     //! \brief rotate body in clock wise
 
     virtual void rotate_clock_wise(){
-      if(body_index==1){
-        r_joint1->SetMotorSpeed(-1);
-      }
+      stop();
+      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(-0.4);
     }
 
     //! \brief roatate body in anti clock wise
 
     virtual void rotate_anti_clock_wise(){
-      if(body_index==1){
-        r_joint1->SetMotorSpeed(1);
-      }
+      stop();
+      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(0.4);
     }
 
     virtual void stop(){
-      r_joint1->SetMotorSpeed(0);
+      for(int i=0;i<6;i++) r_joint[i]->SetMotorSpeed(0);
+    }
+
+    virtual void release(){
+      r_joint[4]->SetMotorSpeed(-0.4);
+      r_joint[5]->SetMotorSpeed(0.4);
+    }
+
+    virtual void move_forward(){
+      r_joint[2]->SetMotorSpeed(0.4);
+      r_joint[4]->SetMotorSpeed(0.4);
+    }
+
+    virtual void move_backward(){
+      r_joint[2]->SetMotorSpeed(-0.4);
+      r_joint[4]->SetMotorSpeed(-0.4);
     }
 
   };
