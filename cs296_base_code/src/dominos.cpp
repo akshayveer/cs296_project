@@ -50,6 +50,12 @@ namespace cs296
     /*! \brief base_body creating a base body for positioning first arm */
     b2Body* base_body;
 
+    //! \brief arm1 creating first arm of crane
+    b2Body* arm1;
+
+    //! \brief base body and arm1 joint 
+    b2RevoluteJoint* r_joint1;
+
     /*! \brief creating ground body */
 
     { 
@@ -62,41 +68,55 @@ namespace cs296
     /*! \brief creating a base body for positioning first arm */
 
     {
-      /*! \brief creating circle */
-
-      circle.m_radius=1.5;
-      dynamic_bd.position.Set(-40,-1+1.75);
-      b2Body* wheel=m_world->CreateBody(&dynamic_bd);
-      wheel->CreateFixture(&circle,0.5);
-
       /*! \brief creating rectangle */
 
-      dynamic_bd.position.Set(-40,-1+1.75+6.5);
+      static_bd.position.Set(-40,-1+6.5);
       shape.SetAsBox(1.75,6.5);
-      base_body=m_world->CreateBody(&dynamic_bd);
-      base_body->CreateFixture(&shape,0.5);
+      base_body=m_world->CreateBody(&static_bd);
+      base_body->CreateFixture(&shape,0.0);
 
       /*! \brief creating triangle */
 
-      vertices[0].Set(0,6.5+1.75*0.8);
+      vertices[0].Set(0,6.5+1.5);
       vertices[1].Set(1.75,6.5);
       vertices[2].Set(-1.75,6.5);
       shape.Set(vertices,3);
-      base_body->CreateFixture(&shape,0.5);
+      base_body->CreateFixture(&shape,0.0);
+    }
 
-      /*! \brief creating revolute joint between circle and rectangle */
+    /*! \brief creating first arm */
 
-      //r_jointDef.Initialize(base_body,wheel,wheel->GetWorldCenter());
-      r_jointDef.bodyA=base_body;
-      r_jointDef.bodyB=wheel;
-      r_jointDef.localAnchorA.Set(0,-6.5);
-      r_jointDef.localAnchorB.Set(0,0);
-      r_jointDef.enableMotor = true;
-      r_jointDef.motorSpeed=2.0f;
-      r_jointDef.maxMotorTorque =10.0f;
-      m_world->CreateJoint(&r_jointDef);
+    {
+      //! \brief rectangle part
+
+      dynamic_bd.position.Set(-40,-1+6.5*2+1.5+6+1.5);
+      shape.SetAsBox(1.0,6.0);
+      arm1=m_world->CreateBody(&dynamic_bd);
+      arm1->CreateFixture(&shape,0.5);
+
+      //! \brief triangle part
+
+      vertices[0].Set(0,-6-1.5);
+      vertices[1].Set(1,-6);
+      vertices[2].Set(-1,-6);
+      shape.Set(vertices,3);
+      arm1->CreateFixture(&shape,0.5);
+
     }
     
+    //! \brief creating revolute joint between base body and first arm
+    {
+      r_jointDef.Initialize(base_body,arm1,b2Vec2(-40,-1+6.5*2+1.5));
+      r_jointDef.enableLimit=1;
+      r_jointDef.lowerAngle=-0.3*b2_pi;
+
+      r_jointDef.enableMotor=1;
+      r_jointDef.maxMotorTorque =10000.0f;
+      r_jointDef.motorSpeed=0;
+      r_joint1 = (b2RevoluteJoint*)m_world->CreateJoint(&r_jointDef);
+      r_joint1->SetMotorSpeed(0);
+
+    }
   }
 
   sim_t *sim = new sim_t("Dominos", dominos_t::create);
