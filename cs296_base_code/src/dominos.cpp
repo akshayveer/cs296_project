@@ -28,6 +28,8 @@ namespace cs296
   
   dominos_t::dominos_t()
   {
+    body_index=1;
+
     /*! \brief definitions are copied when creating body objects 
                so we can use same  definitions to every object
     */
@@ -53,8 +55,6 @@ namespace cs296
     //! \brief arm1 creating first arm of crane
     b2Body* arm1;
 
-    //! \brief base body and arm1 joint 
-    b2RevoluteJoint* r_joint1;
 
     /*! \brief creating ground body */
 
@@ -89,16 +89,16 @@ namespace cs296
     {
       //! \brief rectangle part
 
-      dynamic_bd.position.Set(-40,-1+6.5*2+1.5+6+1.5);
-      shape.SetAsBox(1.0,6.0);
+      dynamic_bd.position.Set(-40,-1+6.5*2+1.5+7+1.5);
+      shape.SetAsBox(1.2,7);
       arm1=m_world->CreateBody(&dynamic_bd);
       arm1->CreateFixture(&shape,0.5);
 
       //! \brief triangle part
 
-      vertices[0].Set(0,-6-1.5);
-      vertices[1].Set(1,-6);
-      vertices[2].Set(-1,-6);
+      vertices[0].Set(0,-7-1.5);
+      vertices[1].Set(1.2,-7);
+      vertices[2].Set(-1.2,-7);
       shape.Set(vertices,3);
       arm1->CreateFixture(&shape,0.5);
 
@@ -114,8 +114,6 @@ namespace cs296
       r_jointDef.maxMotorTorque =10000.0f;
       r_jointDef.motorSpeed=0;
       r_joint1 = (b2RevoluteJoint*)m_world->CreateJoint(&r_jointDef);
-      r_joint1->SetMotorSpeed(0);
-
     }
   }
 

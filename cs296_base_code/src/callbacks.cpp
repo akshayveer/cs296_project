@@ -90,6 +90,23 @@ namespace cs296
     
     switch (key)
     {
+
+    case '1':
+      test->change_to_selected_body(1);
+      break;
+
+    case 'a':
+      test->rotate_anti_clock_wise();
+      break;
+
+    case 'c':
+      test->rotate_clock_wise();
+      break;
+
+    case 's':
+      test->stop();
+      break;
+
     case 27:
       exit(0);
       break;

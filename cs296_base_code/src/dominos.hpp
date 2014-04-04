@@ -1,21 +1,3 @@
-/*
-* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
-
 /* 
  * Base code for CS 296 Software Systems Lab 
  * Department of Computer Science and Engineering, IIT Bombay
@@ -28,17 +10,55 @@
 namespace cs296
 {
   //! This is the class that sets up the Box2D simulation world
-  //! Notice the public inheritance - why do we inherit the base_sim_t class?
+  //! here we add member functions to control various parts
+  //! Used polymorphism by making base_sim_t to point to dominos_t
+  //! We have base_sim_t pointer so need to add override patent class member functions in derived class
+
   class dominos_t : public base_sim_t
   {
+  private:
+
+    //! \brief body_index for considering specified body
+    int body_index;
+
+    //! \brief base body and arm1 joint 
+    b2RevoluteJoint* r_joint1;
+
   public:
     
+
     dominos_t();
     
     static base_sim_t* create()
     {
       return new dominos_t;
     }
+
+    //! \brief change action to specified body
+
+    virtual void change_to_selected_body(int i){
+      body_index=i; 
+    }
+    //! \brief rotate body in clock wise
+
+    virtual void rotate_clock_wise(){
+      if(body_index==1){
+        r_joint1->SetMotorSpeed(-1);
+      }
+    }
+
+    //! \brief roatate body in anti clock wise
+
+    virtual void rotate_anti_clock_wise(){
+      if(body_index==1){
+        r_joint1->SetMotorSpeed(1);
+      }
+    }
+
+    virtual void stop(){
+      r_joint1->SetMotorSpeed(0);
+    }
+
   };
 }
   

@@ -120,6 +120,11 @@ namespace cs296
     
     base_sim_t();
 
+    virtual void change_to_selected_body(int i){}
+    virtual void rotate_clock_wise(){}
+    virtual void rotate_anti_clock_wise(){}
+    virtual void stop(){}
+
     //! Virtual destructors - amazing objects. Why are these necessary?
     virtual ~base_sim_t();
     
