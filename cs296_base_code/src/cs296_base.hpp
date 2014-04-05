@@ -127,6 +127,8 @@ namespace cs296
     virtual void release(){}
     virtual void move_forward(){}
     virtual void move_backward(){}
+    virtual void hold(){}
+    virtual void grab(){}
 
     //! Virtual destructors - amazing objects. Why are these necessary?
     virtual ~base_sim_t();

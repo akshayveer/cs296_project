@@ -66,7 +66,7 @@ namespace cs296
 
     { 
       shape.SetAsBox(55.5f,2.0f);
-      static_bd.position.Set(0.0f,-3.0f);
+      static_bd.position.Set(0.0f,-3);
       b2Body* ground=m_world->CreateBody(&static_bd); 
       ground->CreateFixture(&shape, 0.0f);
     }
@@ -76,10 +76,10 @@ namespace cs296
     {
       /*! \brief creating rectangle */
 
-      static_bd.position.Set(-40,-1+6.5);
+      dynamic_bd.position.Set(-40,-1+6.5);
       shape.SetAsBox(1.75,6.5);
-      base_body=m_world->CreateBody(&static_bd);
-      base_body->CreateFixture(&shape,0.0);
+      base_body=m_world->CreateBody(&dynamic_bd);
+      base_body->CreateFixture(&shape,1000.0);
 
       /*! \brief creating triangle */
 
@@ -144,7 +144,7 @@ namespace cs296
 
       //! \brief creating rectangle
 
-      shape.SetAsBox(14,1.2,b2Vec2(10,1.5+1.2),0);
+      shape.SetAsBox(15,1.2,b2Vec2(10,1.5+1.2),0);
       arm2->CreateFixture(&shape,0.2);
 
       //! \brief creating second triangle
@@ -277,7 +277,12 @@ namespace cs296
       shape.SetAsBox(2,2.0f);
       dynamic_bd.position.Set(-10.0f,1.0f);
       b2Body* ground=m_world->CreateBody(&dynamic_bd); 
-      ground->CreateFixture(&shape, 0.0f);
+      b2FixtureDef wedgefd;
+      wedgefd.shape = &shape;
+      wedgefd.density = 0.5f;
+      wedgefd.friction = 1.0f;
+      wedgefd.restitution = 0.0f;
+      ground->CreateFixture(&wedgefd);
     }
   }
 

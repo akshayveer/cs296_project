@@ -122,11 +122,19 @@ namespace cs296
         break;
 
       case 'b':
-        test->move_forward();
+        test->move_backward();
         break;
 
       case 'f':
-        test->move_backward();
+        test->move_forward();
+        break;
+
+      case 'h':
+        test->hold();
+        break;
+
+      case 'g':
+        test->grab();
         break;
 
       case 27:

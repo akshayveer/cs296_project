@@ -58,10 +58,20 @@ namespace cs296
     }
 
     virtual void release(){
-      r_joint[4]->SetMotorSpeed(-0.4);
+      r_joint[3]->SetMotorSpeed(-0.4);
       r_joint[5]->SetMotorSpeed(0.4);
     }
 
+    virtual void hold(){
+      r_joint[2]->SetMotorSpeed(0.4);
+      r_joint[4]->SetMotorSpeed(-0.4);
+    }
+
+    virtual void grab(){
+      r_joint[3]->SetMotorSpeed(0.4);
+      r_joint[5]->SetMotorSpeed(-0.4);
+    }
+    
     virtual void move_forward(){
       r_joint[2]->SetMotorSpeed(0.4);
       r_joint[4]->SetMotorSpeed(0.4);
