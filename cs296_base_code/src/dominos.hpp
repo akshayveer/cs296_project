@@ -43,14 +43,14 @@ namespace cs296
 
     virtual void rotate_clock_wise(){
       stop();
-      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(-0.4);
+      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(-0.3);
     }
 
     //! \brief roatate body in anti clock wise
 
     virtual void rotate_anti_clock_wise(){
       stop();
-      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(0.4);
+      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(0.3);
     }
 
     virtual void stop(){
@@ -58,28 +58,28 @@ namespace cs296
     }
 
     virtual void release(){
-      r_joint[3]->SetMotorSpeed(-0.4);
-      r_joint[5]->SetMotorSpeed(0.4);
+      r_joint[3]->SetMotorSpeed(-0.3);
+      r_joint[5]->SetMotorSpeed(0.3);
     }
 
     virtual void hold(){
-      r_joint[2]->SetMotorSpeed(0.4);
-      r_joint[4]->SetMotorSpeed(-0.4);
+      r_joint[2]->SetMotorSpeed(0.3);
+      r_joint[4]->SetMotorSpeed(-0.3);
     }
 
     virtual void grab(){
-      r_joint[3]->SetMotorSpeed(0.4);
-      r_joint[5]->SetMotorSpeed(-0.4);
+      r_joint[3]->SetMotorSpeed(0.3);
+      r_joint[5]->SetMotorSpeed(-0.3);
     }
     
     virtual void move_forward(){
-      r_joint[2]->SetMotorSpeed(0.4);
-      r_joint[4]->SetMotorSpeed(0.4);
+      r_joint[2]->SetMotorSpeed(0.3);
+      r_joint[4]->SetMotorSpeed(0.3);
     }
 
     virtual void move_backward(){
-      r_joint[2]->SetMotorSpeed(-0.4);
-      r_joint[4]->SetMotorSpeed(-0.4);
+      r_joint[2]->SetMotorSpeed(-0.3);
+      r_joint[4]->SetMotorSpeed(-0.3);
     }
 
   };
