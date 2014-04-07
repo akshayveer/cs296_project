@@ -24,6 +24,9 @@ namespace cs296
     //! \brief base body and arm1 joint 
     b2RevoluteJoint* r_joint[6];
 
+    /*! \brief base_body creating a base body for positioning first arm */
+    b2Body* base_body;
+
   public:
     
 
@@ -75,6 +78,7 @@ namespace cs296
     virtual void move_forward(){
       r_joint[2]->SetMotorSpeed(0.3);
       r_joint[4]->SetMotorSpeed(0.3);
+
     }
 
     virtual void move_backward(){
