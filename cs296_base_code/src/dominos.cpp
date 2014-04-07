@@ -75,9 +75,9 @@ namespace cs296
       /*! \brief creating rectangle */
       l1=1.75;h1=6.5;x1=-40;y1=-1+h1;
 
-      dynamic_bd.position.Set(x1,y1);
+      static_bd.position.Set(x1,y1);
       shape.SetAsBox(l1,h1);
-      base_body=m_world->CreateBody(&dynamic_bd);
+      base_body=m_world->CreateBody(&static_bd);
       base_body->CreateFixture(&shape,1000.0);
 
       /*! \brief creating triangle */
@@ -99,7 +99,7 @@ namespace cs296
       dynamic_bd.position.Set(x1,y1);
       shape.SetAsBox(l1,h1);
       arm1=m_world->CreateBody(&dynamic_bd);
-      arm1->CreateFixture(&shape,0.5);
+      arm1->CreateFixture(&shape,5);
 
       //! \brief triangle part
 
@@ -148,7 +148,7 @@ namespace cs296
       l1=17; h1=1.2; w1=3;
 
       shape.SetAsBox(l1,h1,b2Vec2(l1-w1,h2+h1),0);
-      arm2->CreateFixture(&shape,0.2);
+      arm2->CreateFixture(&shape,5);
 
       //! \brief creating second triangle
 
@@ -181,12 +181,12 @@ namespace cs296
       shape.Set(vertices,3);
       dynamic_bd.position.Set(x1,y1);
       b2Body* b1=m_world->CreateBody(&dynamic_bd);
-      b1->CreateFixture(&shape,0.1);
+      b1->CreateFixture(&shape,1);
 
       l1=3;h1=0.5;
 
       shape.SetAsBox(l1,h1,b2Vec2(-l1-h1,0),0);
-      b1->CreateFixture(&shape,0.2);
+      b1->CreateFixture(&shape,2);
 
       w2=0.2;
 
@@ -194,7 +194,7 @@ namespace cs296
       vertices[1].Set(-h2-l1-l1+w2+h2+h2,-h1);
       vertices[2].Set(-h2-l1-l1+w2,-h1);
       shape.Set(vertices,3);
-      b1->CreateFixture(&shape,0.1);
+      b1->CreateFixture(&shape,1);
 
 
       //! \brief second part
@@ -205,7 +205,7 @@ namespace cs296
       shape.Set(vertices,3);
       dynamic_bd.position.Set(x1+-h2-l1-l1+w2+h2,y1-h1-h2);
       b2Body* b2=m_world->CreateBody(&dynamic_bd);
-      b2->CreateFixture(&shape,0.1);
+      b2->CreateFixture(&shape,1);
 
       //! \brief creating joint between first part and second part
       r_jointDef.enableLimit=0;
@@ -216,14 +216,14 @@ namespace cs296
 
       l1=0.5; h1=3;
       shape.SetAsBox(l1,h1,b2Vec2(0,-h2-h1),0);
-      b2->CreateFixture(&shape,0.2);
+      b2->CreateFixture(&shape,2);
 
       w2=1; w1=5;
       vertices[0].Set(-h2,-h2-h1-h1+w2);
       vertices[1].Set(-h2,-h2-h1-h1);
       vertices[2].Set(w1,-h2-h1-h1);
       shape.Set(vertices,3);
-      b2->CreateFixture(&shape,0.10);
+      b2->CreateFixture(&shape,1);
 
       //! \brief creating joint between arm2 and first hand
       r_jointDef.Initialize(arm2,b1,b2Vec2(x1,y1));
@@ -243,19 +243,19 @@ namespace cs296
       shape.Set(vertices,3);
       dynamic_bd.position.Set(x1,y1);
       b2Body* b1=m_world->CreateBody(&dynamic_bd);
-      b1->CreateFixture(&shape,0.1);
+      b1->CreateFixture(&shape,1);
 
       l1=3;h1=0.5;
 
       shape.SetAsBox(l1,h1,b2Vec2(l1+h2,0),0);
-      b1->CreateFixture(&shape,0.2);
+      b1->CreateFixture(&shape,2);
 
       w2=0.2;
       vertices[0].Set(h2+l1+l1-w2-h2,-h1-h2);
       vertices[1].Set(h2+l1+l1-w2,-h1);
       vertices[2].Set(h2+l1+l1-w2-h2-h2,-h1);
       shape.Set(vertices,3);
-      b1->CreateFixture(&shape,0.1);
+      b1->CreateFixture(&shape,1);
 
 
       //! \brief second part
@@ -266,7 +266,7 @@ namespace cs296
       shape.Set(vertices,3);
       dynamic_bd.position.Set(x1+h2+l1+l1-w2-h2,y1-h1-h2);
       b2Body* b2=m_world->CreateBody(&dynamic_bd);
-      b2->CreateFixture(&shape,0.1);
+      b2->CreateFixture(&shape,1);
 
       //! \brief creating joint
       r_jointDef.Initialize(b1,b2,b2Vec2(x1+h2+l1+l1-w2-h2,y1-h1-h2));
@@ -276,7 +276,7 @@ namespace cs296
 
       l1=0.5; h1=3;
       shape.SetAsBox(l1,h1,b2Vec2(0,-h2-h1),0);
-      b2->CreateFixture(&shape,0.2);
+      b2->CreateFixture(&shape,2);
 
       w2=1; w1=5;
 
@@ -284,7 +284,7 @@ namespace cs296
       vertices[1].Set(h2,-h2-h1-h1);
       vertices[2].Set(-w1,-h2-h1-h1);
       shape.Set(vertices,3);
-      b2->CreateFixture(&shape,0.10);
+      b2->CreateFixture(&shape,1);
 
       //! \brief creating joint between arm2 and first hand
       r_jointDef.Initialize(arm2,b1,b2Vec2(x1,y1));
@@ -293,17 +293,26 @@ namespace cs296
         
     }
 
-  /*  {
-      shape.SetAsBox(2,2.0f);
-      dynamic_bd.position.Set(-10.0f,1.0f);
-      b2Body* ground=m_world->CreateBody(&dynamic_bd); 
+    {
+      shape.SetAsBox(1,1.0f);
+    //  dynamic_bd.position.Set(-10.0f,0.0f);
+   //   b2Body* ground=m_world->CreateBody(&dynamic_bd); 
       b2FixtureDef wedgefd;
       wedgefd.shape = &shape;
       wedgefd.density = 0.5f;
       wedgefd.friction = 1.0f;
       wedgefd.restitution = 0.0f;
-      ground->CreateFixture(&wedgefd);
-    }*/
+     // ground->CreateFixture(&wedgefd);
+      for(int j=1;j<5;j++){
+        for(int i=0;i<=10;i++){
+          dynamic_bd.position.Set(-6-2*i-0.3*i,10);
+          b2Body* ground=m_world->CreateBody(&dynamic_bd);
+          ground->CreateFixture(&wedgefd);
+        }
+      }
+
+
+    }
 
     {
         b2CircleShape c1,c2,c3;
