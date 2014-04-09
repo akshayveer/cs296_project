@@ -1,92 +1,114 @@
 /* 
- * Base code for CS 296 Software Systems Lab 
- * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
- */
+* Base code for CS 296 Software Systems Lab 
+* Department of Computer Science and Engineering, IIT Bombay
+* Instructor: Parag Chaudhuri
+*/
+
+/*! \file dominos.hpp
+\brief This contains all function declarations of dominos.cpp.
+*/
 
 #ifndef _DOMINOS_HPP_
 #define _DOMINOS_HPP_
 
 namespace cs296
 {
-  //! This is the class that sets up the Box2D simulation world
-  //! here we add member functions to control various parts
-  //! Used polymorphism by making base_sim_t to point to dominos_t
-  //! We have base_sim_t pointer so need to add override patent class member functions in derived class
 
-  class dominos_t : public base_sim_t
-  {
-  private:
+//! This is the class that sets up the Box2D simulation world
+//! Here we add member functions to control various objects in simulation
+//! Since dominos_t is derived class of  base_sim_t we need to override parent class member functions
 
-    //! \brief body_index for considering specified body
-    int body_index;
+/*!
+\class dominos_t 
+\brief This is used to define objects in simulation.
+*/
 
-    //! \brief base body and arm1 joint 
-    b2RevoluteJoint* r_joint[6];
+class dominos_t : public base_sim_t
+{
+private:
 
-    /*! \brief base_body creating a base body for positioning first arm */
-    b2Body* base_body;
+//! \brief body_index for specifying body under consideration.
+	int body_index;
 
-  public:
-    
+//! \brief revolute joints in simulation
+	b2RevoluteJoint* r_joint[6];
 
-    dominos_t();
-    
-    static base_sim_t* create()
-    {
-      return new dominos_t;
-    }
+/*! \brief creating a base body for positioning first arm */
+	b2Body* base_body;
 
-    //! \brief change action to specified body
+public:
 
-    virtual void change_to_selected_body(int i){
-      body_index=i; 
-    }
-    //! \brief rotate body in clock wise
+/*!    \fn dominos_t();
+\brief constructor for this class
+*/
+dominos_t();
 
-    virtual void rotate_clock_wise(){
-      stop();
-      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(-0.3);
-    }
+/*!    \fn static base_sim_t* create()
+\brief This function creates all objects present in dominos.cpp file
+\brief Used polymorphism in this function by returning pointer to dominos_t instead of  base_sim_t
+*/
 
-    //! \brief roatate body in anti clock wise
-
-    virtual void rotate_anti_clock_wise(){
-      stop();
-      if(body_index>0 && body_index<7) r_joint[body_index-1]->SetMotorSpeed(0.3);
-    }
-
-    virtual void stop(){
-      for(int i=0;i<6;i++) r_joint[i]->SetMotorSpeed(0);
-    }
-
-    virtual void release(){
-      r_joint[3]->SetMotorSpeed(-0.3);
-      r_joint[5]->SetMotorSpeed(0.3);
-    }
-
-    virtual void hold(){
-      r_joint[2]->SetMotorSpeed(0.3);
-      r_joint[4]->SetMotorSpeed(-0.3);
-    }
-
-    virtual void grab(){
-      r_joint[3]->SetMotorSpeed(0.3);
-      r_joint[5]->SetMotorSpeed(-0.3);
-    }
-    
-    virtual void move_forward(){
-      r_joint[2]->SetMotorSpeed(0.3);
-      r_joint[4]->SetMotorSpeed(0.3);
-
-    }
-
-    virtual void move_backward(){
-      r_joint[2]->SetMotorSpeed(-0.3);
-      r_joint[4]->SetMotorSpeed(-0.3);
-    }
-
-  };
+static base_sim_t* create()
+{
+	return new dominos_t;
 }
-  
+
+/*!   \fn  void change_to_selected_body(int i)
+\brief This function changes the body under consideration.
+\param integer i : index of body
+*/
+
+ void change_to_selected_body(int i);
+
+/*!   \fn  void rotate_clock_wise()
+\brief This function rotates body in clock wise direction.
+*/
+
+ void rotate_clock_wise();
+
+/*!    \fn  void rotate_anti_clock_wise()
+\brief This function roatates body in anti clock wise direction.
+*/
+
+ void rotate_anti_clock_wise();
+
+/*!    \fn  void stop()
+\brief This function stops the rotation of body.
+*/
+
+ void stop();
+
+/*!    \fn  void release()
+\brief This function releases the object present inside the arm.
+*/
+
+ void release();
+
+/*!    \fn  void hold()
+\brief This function holds the object with the arm using first joints.
+*/	
+
+ void hold();
+
+/*!    \fn  void grab()
+\brief This function holds the object with the arm using second joints.
+*/
+
+ void grab();
+
+/*!    \fn  void move_forward()
+\brief This function moves both arms in Anti-clock wise directions
+*/
+
+ void move_forward();
+
+/*!    \fn  void move_forward()
+\brief This function moves both arms in Clock wise directions
+*/
+
+ void move_backward();
+
+};
+}
+
 #endif
