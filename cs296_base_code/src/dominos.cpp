@@ -31,7 +31,7 @@ namespace cs296
 
 /*!   \fn  void dominos_t::change_to_selected_body(int i)
 \brief This function changes the body under consideration.
-\param integer i : index of body
+\param i : index of body
 */
 
 
