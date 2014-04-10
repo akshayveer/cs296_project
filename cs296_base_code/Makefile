@@ -163,7 +163,7 @@ clean:
 	@$(ECHO) -n "Cleaning up..."
 	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ ./myobjs ./mylibs ./mybins 
 	@$(RM) -rf data plots
-	@$(RM) -rf doc/*.pdf doc/*.aux doc/*.log
+	@$(RM) -rf doc/*.pdf doc/*.aux doc/*.log doc/*.blg doc/*.bbl doc/*.out
 	@$(ECHO) "Done"
 
 distclean: clean
@@ -179,6 +179,7 @@ data:
 	@cd scripts;\
 	./g23_gen_data_csv.sh;\
 	./g23_gen_data_random.sh
+	$(ECHO) "Report Done"
 
 plot: data 
 	@mkdir -p plots;
@@ -190,12 +191,23 @@ plot: data
 	gnuplot g23_plot02.gpt;\
 	gnuplot g23_plot03.gpt;\
 	gnuplot g23_plot04.gpt;\
-
-
+	
 report: 
+	@mkdir -p data
+	@mkdir -p plots
 	@cd doc ;\
-	pdflatex g23_projectReport.tex;\
+	pdflatex g23_projectReport; \
+	bibtex g23_projectReport; \
+	pdflatex g23_projectReport; \
+	pdflatex g23_projectReport; \
+
+	@cd scripts;\
+	python g23_gen_html.py;\
 	$(ECHO) "Report Done"
+	#python g23_gen_csv.py;\
+	#python g23_gen_plots.py; \
+	#@rm data/averaged.csv
+	
 
 
 gpf:

@@ -4,7 +4,7 @@ rm -f g23_projectdata_random.csv
 touch g23_projectdata_random.csv
 i=0
 iters=100
-steps=15
+steps=30
 range=15
 while [ $i -ne $iters ]
 do

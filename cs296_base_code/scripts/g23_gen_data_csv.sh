@@ -4,7 +4,7 @@ rm -f g23_projectdata.csv
 touch g23_projectdata.csv
 i=0
 iters=100
-steps=15
+steps=30
 while [ $i -ne $iters ]
 do
 	j=0
