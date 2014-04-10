@@ -1,0 +1,10 @@
+#
+set datafile separator ","
+set terminal png
+set title "Error in Reruns vs Iterations"
+set output "../plots/g23_plot03.png"
+set ylabel "Error in Reruns (ms)"
+set xlabel "Iterations"
+plot '../data/g3help.txt' using 1:2:3 with errorbars title "Variation in Step Time over Reruns","" using 1:2 with line
+#pause -1
+# 

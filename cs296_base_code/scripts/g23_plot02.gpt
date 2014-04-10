@@ -1,0 +1,10 @@
+#
+set datafile separator ","
+set terminal png
+set title "Averaged Step, Collision, Velocity, Position Update Times, and their sums vs Iterations"
+set output "../plots/g23_plot02.png"
+set ylabel "Averaged Step, Collision, Velocity, Position Update Times, and their sums (ms)"
+set xlabel "Iterations"
+plot '../data/g23_projectdata.csv' using 1:3 smooth unique with line title 'Average Step Time',''using 1:4 smooth unique with line title 'Average Collision time',''using 1:5 smooth unique with line title 'Average Velocity Update Time',''using 1:6 smooth unique with line title 'Average position Update Time','../data/g2help.txt' using 1:2 smooth unique with line title "Sum of all averages"
+#pause -1
+# 

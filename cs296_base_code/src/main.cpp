@@ -41,6 +41,7 @@
 //! These are usually available at standard system paths like /usr/include
 //! Read about the use of include files in C++
 #include <cstdio>
+#include <sys/time.h>
 
 
 //! Notice the use of extern. Why is it used here?
@@ -65,11 +66,13 @@ using namespace cs296;
 
 
 //! This function creates all the GLUI gui elements
+/*
 void create_glui_ui(void)
 {
   GLUI *glui = GLUI_Master.create_glui_subwindow( main_window, GLUI_SUBWINDOW_BOTTOM );
   
   glui->add_statictext("Simulation Timesteps"); 
+ls
   GLUI_Spinner* velocityIterationSpinner =
     glui->add_spinner("Velocity Iterations", GLUI_SPINNER_INT, &settings.velocity_iterations);
   velocityIterationSpinner->set_int_limits(1, 500);
@@ -94,7 +97,7 @@ void create_glui_ui(void)
   
   new GLUI_Column( glui, false );
   glui->add_statictext("Display Options"); 
-  GLUI_Panel* drawPanel =	glui->add_panel("Draw");
+  GLUI_Panel* drawPanel = glui->add_panel("Draw");
   glui->add_checkbox_to_panel(drawPanel, "Shapes", &settings.draw_shapes);
   glui->add_checkbox_to_panel(drawPanel, "Joints", &settings.draw_joints);
   glui->add_checkbox_to_panel(drawPanel, "AABBs", &settings.draw_AABBs);
@@ -110,6 +113,7 @@ void create_glui_ui(void)
   glui->set_main_gfx_window( main_window );
 }
 
+*/
 
 //! This is the main function
 int main(int argc, char** argv)
@@ -118,8 +122,38 @@ int main(int argc, char** argv)
   test_index = 0;
   test_selection = test_index;
   
+  int it=0;
+  if(scanf("%d",&it) > 0);
+  
   entry = sim;
   test = entry->create_fcn();
+  float32 loop_time=0.0f,velocity_time=0.0f,step_time=0.0f,collision_time=0.0f,position_time=0.0f;
+  
+  struct timeval tp;
+  gettimeofday(&tp,NULL);
+  double start=tp.tv_sec*1000.0+tp.tv_usec/1000.0;
+  for(int i=0;i<it;i++){
+  b2World* my_world = test->get_world();
+      my_world->Step(1/settings.hz,settings.velocity_iterations,settings.position_iterations);
+      const b2Profile& profile = my_world->GetProfile();
+      velocity_time += profile.solveVelocity;
+      collision_time += profile.collide;
+      position_time += profile.solvePosition;
+      step_time += profile.step;
+  }
+  gettimeofday(&tp,NULL);
+  double end=tp.tv_sec*1000.0+tp.tv_usec/1000.0;
+  loop_time=end-start;
+
+  printf("Number of Iterations: %d\n",it);
+  printf("Average time per step is %f ms\n",step_time/it);
+  printf("Average time for collisions is %f ms\n",collision_time/it);
+  printf("Average time for velocity updates is %f ms\n",velocity_time/it);
+  printf("Average time for position updates is %f ms\n\n",position_time/it);
+  printf("Total loop time is %f ms", loop_time);
+  return 0;
+
+  /*
 
   //! This initializes GLUT
   glutInit(&argc, argv);
@@ -147,6 +181,8 @@ int main(int argc, char** argv)
 
   //! Enter the infinite GLUT event loop
   glutMainLoop();
+
+  */
   
   return 0;
 }

@@ -44,7 +44,19 @@ void dominos_t::change_to_selected_body(int i){
 */
 
 void dominos_t::stop(){
-	for(int i=0;i<6;i++) r_joint[i]->SetMotorSpeed(0);
+	for(int i=0;i<8;i++) r_joint[i]->SetMotorSpeed(0);
+}
+
+void dominos_t::left(){
+	stop();
+	r_joint[6]->SetMotorSpeed(-8);
+	r_joint[7]->SetMotorSpeed(-8);
+}
+
+void dominos_t::right(){
+	stop();
+	r_joint[6]->SetMotorSpeed(8);
+	r_joint[7]->SetMotorSpeed(8);
 }
 
 
@@ -125,6 +137,8 @@ b2BodyDef static_bd; 		/*! static_bd is name of body  it is static by default*/
 b2BodyDef dynamic_bd; 	/*! dyanmic_bd is  name of another body*/
 dynamic_bd.type=b2_dynamicBody; 	/*! making dyanmic_bd  as dynamic using type property of body*/
 b2RevoluteJointDef r_jointDef;		/*! r_jointDef is a revolute joint  */
+b2FixtureDef fd;
+
 
 b2PolygonShape shape; /*!< shape is used for creating rectangular shapes*/
 b2CircleShape circle;	 /*!  circle is used for creating circle shapes*/
@@ -146,8 +160,14 @@ float x1,y1,l1,h1,h2,w1=5,w2=1;
 { 
 	shape.SetAsBox(55.5f,2.0f);
 	static_bd.position.Set(0.0f,-3);
-	b2Body* ground=m_world->CreateBody(&static_bd); 
-	ground->CreateFixture(&shape, 0.0f);
+	b2Body* ground=m_world->CreateBody(&static_bd);
+
+	fd.shape = &shape;
+	fd.density = 0.0f;
+	fd.friction = 0.5f;
+	fd.restitution = 0.0f;
+
+	ground->CreateFixture(&fd);
 }
 
 /*! \brief creating a base body for positioning first arm */
@@ -375,21 +395,20 @@ float x1,y1,l1,h1,h2,w1=5,w2=1;
 }
 
 {
-	shape.SetAsBox(1,1.0f);
-//  dynamic_bd.position.Set(-10.0f,0.0f);
-//   b2Body* ground=m_world->CreateBody(&dynamic_bd); 
+	shape.SetAsBox(1,1);
 	b2FixtureDef wedgefd;
 	wedgefd.shape = &shape;
-	wedgefd.density = 0.5f;
-	wedgefd.friction = 1.0f;
+	wedgefd.density = 1.0f;
+	wedgefd.friction = 0.5f;
 	wedgefd.restitution = 0.0f;
-// ground->CreateFixture(&wedgefd);
-	for(int j=1;j<5;j++){
-		for(int i=0;i<=10;i++){
-			dynamic_bd.position.Set(-6-2*i-0.3*i,10);
+	int k=12;
+	for(int j=1;j<=6;j++){
+		for(int i=0;i<k;i++){
+			dynamic_bd.position.Set(-3-2*i-(10-k),2*(j-1));
 			b2Body* ground=m_world->CreateBody(&dynamic_bd);
 			ground->CreateFixture(&wedgefd);
 		}
+		k=k-2;
 	}
 
 
@@ -399,14 +418,14 @@ float x1,y1,l1,h1,h2,w1=5,w2=1;
 	b2CircleShape c1,c2,c3;
 	c1.m_radius = 0.1;
 	c2.m_radius = 2;
-	static_bd.position.Set(6,10);
-	dynamic_bd.position.Set(6,10);
+	static_bd.position.Set(6,15);
+	dynamic_bd.position.Set(6,15);
 	b2Body* b2=m_world->CreateBody(&dynamic_bd);
 	b2->CreateFixture(&c2,0.5);
 	b2Body* b1=m_world->CreateBody(&static_bd);
 	b1->CreateFixture(&c1,0.0f);
 	b2RevoluteJointDef jointDef;
-	jointDef.Initialize(b1,b2,b2Vec2(6,10));
+	jointDef.Initialize(b1,b2,b2Vec2(6,15));
 	jointDef.enableMotor=true;
 	jointDef.maxMotorTorque =10000.0f;
 	jointDef.motorSpeed=-3.0f;
@@ -417,14 +436,14 @@ float x1,y1,l1,h1,h2,w1=5,w2=1;
 	b2CircleShape c1,c2;
 	c1.m_radius = 0.1;
 	c2.m_radius = 2;
-	static_bd.position.Set(22,10);
-	dynamic_bd.position.Set(22,10);
+	static_bd.position.Set(26,15);
+	dynamic_bd.position.Set(26,15);
 	b2Body* b2=m_world->CreateBody(&dynamic_bd);
 	b2->CreateFixture(&c2,0.5);
 	b2Body* b1=m_world->CreateBody(&static_bd);
 	b1->CreateFixture(&c1,0.0f);
 	b2RevoluteJointDef jointDef;
-	jointDef.Initialize(b1,b2,b2Vec2(22,10));
+	jointDef.Initialize(b1,b2,b2Vec2(26,15));
 	jointDef.enableMotor=true;
 	jointDef.maxMotorTorque =10000.0f;
 	jointDef.motorSpeed=-3.0f;
@@ -432,9 +451,9 @@ float x1,y1,l1,h1,h2,w1=5,w2=1;
 }
 
 {
-	int up_pieces = 19, down_pieces = 18, left_pieces = 2, right_pieces = 2;
-	int up_x = 6-0.1, up_y = 10+2;
-	int down_x = 6-0.1, down_y = 10-2;
+	int up_pieces = 22, down_pieces = 22, left_pieces = 4, right_pieces = 4;
+	int up_x = 6-0.1, up_y = 15+2;
+	int down_x = 6-0.1, down_y = 15-2;
 	float32 x = 0.5, y = 0.1;
 
 	b2PolygonShape shape_h;
@@ -547,6 +566,67 @@ float x1,y1,l1,h1,h2,w1=5,w2=1;
 	jointDef.bodyA = body_down[down_pieces-1];
 	jointDef.bodyB = body_right[0];
 	m_world->CreateJoint(&jointDef);
+}
+
+{
+	static_bd.position.Set(29,4);
+	shape.SetAsBox(0.5,5);
+	b2Body* b1=m_world->CreateBody(&static_bd);
+	b1->CreateFixture(&shape,0.0f);
+
+	static_bd.position.Set(45,4);
+	shape.SetAsBox(0.5,5);
+	b1=m_world->CreateBody(&static_bd);
+	b1->CreateFixture(&shape,0.0f);
+
+	static_bd.position.Set(8+29,-1+0.5);
+	shape.SetAsBox(8,0.5);
+	b1=m_world->CreateBody(&static_bd);
+	b1->CreateFixture(&shape,0.0f);
+
+}
+
+{
+	b2CircleShape c1;
+	c1.m_radius = 1.2;
+	dynamic_bd.position.Set(10,0.2);
+	b2Body* b1=m_world->CreateBody(&dynamic_bd);
+
+	fd.shape = &c1;
+	fd.density = 0.5f;
+	fd.friction = 0.5f;
+	fd.restitution = 0.0f;
+
+	b1->CreateFixture(&fd);
+	
+	dynamic_bd.position.Set(20,0.2);
+	b2Body* b2=m_world->CreateBody(&dynamic_bd);
+	b2->CreateFixture(&fd);
+
+	shape.SetAsBox(6.2+0.4,3);
+	dynamic_bd.position.Set(10+5,2.8);
+	b2Body* b3=m_world->CreateBody(&dynamic_bd);
+	b3->CreateFixture(&shape,2);
+
+	shape.SetAsBox(2,0.2,b2Vec2(-6.6-2,0),0);
+	b3->CreateFixture(&shape,0.5);
+
+	shape.SetAsBox(0.2,5,b2Vec2(-6.6-4-0.1,1.4),0);
+	b3->CreateFixture(&shape,0.5);
+
+	
+	
+	r_jointDef.Initialize(b1,b3,b2Vec2(10,0.2));
+	r_jointDef.enableMotor=true;
+	r_jointDef.maxMotorTorque =10000.0f;
+	r_jointDef.motorSpeed=0.0f;
+	r_joint[6] = (b2RevoluteJoint*)m_world->CreateJoint(&r_jointDef);
+
+	r_jointDef.Initialize(b2,b3,b2Vec2(20,0.2));
+	r_jointDef.enableMotor=true;
+	r_jointDef.maxMotorTorque =10000.0f;
+	r_jointDef.motorSpeed=0.0f;
+	r_joint[7] = (b2RevoluteJoint*)m_world->CreateJoint(&r_jointDef);
 }
 
 }

@@ -129,6 +129,10 @@ namespace cs296
     virtual void move_backward(){}
     virtual void hold(){}
     virtual void grab(){}
+    virtual void left(){}
+    virtual void right(){}
+    
+    b2World* get_world();
 
     //! Virtual destructors - amazing objects. Why are these necessary?
     virtual ~base_sim_t();

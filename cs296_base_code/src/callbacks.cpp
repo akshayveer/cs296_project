@@ -137,6 +137,14 @@ namespace cs296
         test->grab();
         break;
 
+      case 'k':
+        test->left();
+        break;
+
+      case 'l':
+        test->right();
+        break;
+
       case 27:
         exit(0);
         break;

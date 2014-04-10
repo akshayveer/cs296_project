@@ -31,7 +31,7 @@ private:
 	int body_index;
 
 //! \brief revolute joints in simulation
-	b2RevoluteJoint* r_joint[6];
+	b2RevoluteJoint* r_joint[8];
 
 /*! \brief creating a base body for positioning first arm */
 	b2Body* base_body;
@@ -107,6 +107,10 @@ static base_sim_t* create()
 */
 
  void move_backward();
+
+ void left();
+
+ void right();
 
 };
 }

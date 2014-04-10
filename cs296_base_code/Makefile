@@ -84,8 +84,6 @@ ifeq (,$(VARPATH))
 	@ tar xvzf ./external/src/Box2D.tgz  -C ./external/src/
 	@ mkdir -p $(SOFT)/build296 
 	@ cd $(SOFT)/build296 ;  cmake ../ ;  make ; make install
-	@ patch -b -i ./b2Timer_h.patch ./external/src/Box2D/Box2D/Common/b2Timer.h 
-	@ patch -b -i ./b2Timer_cpp.patch ./external/src/Box2D/Box2D/Common/b2Timer.cpp
 endif
 
 release_install:
@@ -165,6 +163,7 @@ clean:
 	@$(ECHO) -n "Cleaning up..."
 	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ ./myobjs ./mylibs ./mybins 
 	@$(RM) -rf data plots
+	@$(RM) -rf doc/*.pdf doc/*.aux doc/*.log
 	@$(ECHO) "Done"
 
 distclean: clean
@@ -174,31 +173,30 @@ distclean: clean
 	@$(RM) -rf  $(EXTERNAL_ROOT)/include/*	 $(EXTERNAL_ROOT)/lib/*  $(EXTERNAL_ROOT)/src/Box2D
 	@rm -f g23_debug_prof.dat g23_release_prof.dat gmon.out *.png;
 	@$(ECHO) "Done" 
-
-report: 
-	@cd doc ;\
-	pdflatex g23_prof_report.tex
-	$(ECHO) "Report Done"
 	
 data:
 	@mkdir -p data
 	@cd scripts;\
-	./g23_gen_data.sh;\
-	./g23_gen_csv.sh;\
 	./g23_gen_data_csv.sh;\
 	./g23_gen_data_random.sh
 
 plot: data 
 	@mkdir -p plots;
 	@cd scripts;\
+	./helper1.sh;\
+	./helper2.sh;\
+	./helper4.sh;\
 	gnuplot g23_plot01.gpt;\
 	gnuplot g23_plot02.gpt;\
-	./helper2.sh;\
 	gnuplot g23_plot03.gpt;\
-	./helper3.sh;\
 	gnuplot g23_plot04.gpt;\
-	./helper4.sh;\
-	gnuplot g23_plot05.gpt;
+
+
+report: 
+	@cd doc ;\
+	pdflatex g23_projectReport.tex;\
+	$(ECHO) "Report Done"
+
 
 gpf:
 	chmod +x gprof2dot.py;

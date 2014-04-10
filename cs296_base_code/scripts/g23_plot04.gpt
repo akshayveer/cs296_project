@@ -1,0 +1,14 @@
+#
+set datafile separator ","
+set terminal png
+set title "Average Step Time vs Iterations"
+set output "../plots/g23_plot04.png"
+set xlabel "Iterations"
+set ylabel "Average Step Time"
+f1(x)=a1*x+b1
+f2(x)=a2*x+b2
+fit f1(x) '../data/g5help1.txt' u 1:2 via a1,b1
+fit f2(x) '../data/g5help2.txt' u 1:2 via a2,b2
+plot '../data/g5help1.txt' using 1:2 with points title "Average Step Time",f1(x) title "Best fit line for all iterations",'../data/g5help2.txt' using 1:2 with points title "Average step time for 15 arbit Reruns" ,f2(x) title "Best fit line for all iterations for 15 random Reruns"
+#pause -1
+#

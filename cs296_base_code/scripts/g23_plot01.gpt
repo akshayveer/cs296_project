@@ -1,0 +1,10 @@
+#
+set datafile separator ","
+set terminal png
+set title "Average Step Time vs Iterations"
+set output "../plots/g23_plot01.png"
+set xlabel "Number of Iterations" 
+set ylabel "Average Step Time , Loop Time  (ms)"
+plot '../data/g23_projectdata.csv' using 1:7 smooth unique with line title 'Loop Time',''using 1:3 smooth unique with boxes title 'Average Step Time'
+#pause -1
+#

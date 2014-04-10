@@ -50,6 +50,10 @@ base_sim_t::~base_sim_t()
 	m_world = NULL;
 }
 
+b2World* base_sim_t::get_world(){
+  return  m_world;
+}
+
 void base_sim_t::pre_solve(b2Contact* contact, const b2Manifold* oldManifold)
 {
   const b2Manifold* manifold = contact->GetManifold();
