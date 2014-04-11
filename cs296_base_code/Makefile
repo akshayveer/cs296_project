@@ -15,6 +15,9 @@ DOXYGEN = doxygen
 TARGET = cs296_23_exe
 LIBTARGET= cs296_23_exelib
 
+# installation directory
+INSTALLATION_DIR = ../../CraneSimulation
+
 # Project Paths
 PROJECT_ROOT=.
 #in below variable box2d software 
@@ -181,6 +184,8 @@ data:
 	./g23_gen_data_random.sh
 	$(ECHO) "Report Done"
 
+
+
 plot: data 
 	@mkdir -p plots;
 	@cd scripts;\
@@ -202,10 +207,10 @@ report:
 	pdflatex g23_projectReport; \
 
 	@cd scripts;\
-	python g23_gen_csv.py;\
-	python g23_gen_plots.py; \
-	@$(RM) data/averaged.csv
 	python g23_gen_html.py;\
+	#python g23_gen_csv.py;\
+	#python g23_gen_plots.py; \
+	#@$(RM) data/averaged.csv
 	
 
 
@@ -232,3 +237,16 @@ release_gprof:
 	@chmod +x gprof2dot.py;
 	@./gprof2dot.py ./data/g23_release_prof.dat | fdp -Tpng -o doc/release.png
 	@$(RM) -f gmon.out;
+
+install: exe exelib doc report
+	@rm -rf $(INSTALLATION_DIR)
+	@mkdir $(INSTALLATION_DIR)
+	@cp -r mybins/ $(INSTALLATION_DIR)
+	@cp -r doc/ $(INSTALLATION_DIR)
+	@cp -r mylibs/ $(INSTALLATION_DIR)
+	@cp -r scripts/ $(INSTALLATION_DIR)
+	
+
+dist: distclean
+	@cd ../../; \
+	tar cvzf cs296_g23_project.tar.gz g23_project README.txt
