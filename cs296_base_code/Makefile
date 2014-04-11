@@ -171,7 +171,7 @@ distclean: clean
 	@$(ECHO) -n "Cleaning up..."
 	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ ./myobjs ./mylibs ./mybins 
 	@$(RM) -rf  $(EXTERNAL_ROOT)/include/*	 $(EXTERNAL_ROOT)/lib/*  $(EXTERNAL_ROOT)/src/Box2D
-	@rm -f g23_debug_prof.dat g23_release_prof.dat gmon.out *.png;
+	@$(RM) -f g23_debug_prof.dat g23_release_prof.dat gmon.out *.png;
 	@$(ECHO) "Done" 
 	
 data:
@@ -202,11 +202,10 @@ report:
 	pdflatex g23_projectReport; \
 
 	@cd scripts;\
+	python g23_gen_csv.py;\
+	python g23_gen_plots.py; \
+	@$(RM) data/averaged.csv
 	python g23_gen_html.py;\
-	$(ECHO) "Report Done"
-	#python g23_gen_csv.py;\
-	#python g23_gen_plots.py; \
-	#@rm data/averaged.csv
 	
 
 
@@ -218,18 +217,18 @@ gpf:
 debug_gprof:
 	@mkdir -p data
 	@make setup; make debug_install; make exe; make exelib;
-	@./mybins/cs296_23_exe <<<10000;
+	@./mybins/cs296_23_exe <<< 10000;
 	@gprof ./mybins/cs296_23_exe gmon.out >  data/g23_debug_prof.dat;
 	@chmod +x gprof2dot.py;
 	@./gprof2dot.py ./data/g23_debug_prof.dat | fdp -Tpng -o doc/debug.png
-	@rm -f gmon.out;
+	@$(RM) -f gmon.out;
 
 release_gprof: CPPFLAGS+=-O3
 release_gprof:
 	@mkdir -p data;
 	@make setup; make release_install; make exe; make exelib
-	@./mybins/cs296_23_exe <<< 50000;
+	@./mybins/cs296_23_exe <<< 10000;
 	@gprof ./mybins/cs296_23_exe gmon.out >  data/g23_release_prof.dat;
 	@chmod +x gprof2dot.py;
 	@./gprof2dot.py ./data/g23_release_prof.dat | fdp -Tpng -o doc/release.png
-	@rm -f gmon.out;
+	@$(RM) -f gmon.out;

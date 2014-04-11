@@ -61,19 +61,21 @@ We have generated all these plots using GNU plot
 <br>5. -O3 and -O2 are compiler option used to optimize the runtime by supressing many function calls and runs the code in elegant 		manner, therefore we find less function calls in release profiling mode.
 <br>6. In Debug profiling mode we don't use these above mentioned optimizing compiler options, so we find much more branches and 	   more time for running the program.
 <br>7. See the graphs obtained release.png and debug.png in images folder for distinction between these profiling modes.
+<br><h3>Problems faced during profiling</h3>
+1.  Since our program is controlled by user by clicking keys from keyboard we cannot directly use the main.cpp to profile the code by directly calling step function.So here we called some of the functions which are triggered movements in objects of simulation.
 <br><h3>Inferences from Release profiling mode Graph</h3>
-1. For very smaller number of iterations we are getting erroneous data. This is happening because some funcitons are taking 		very less time and are being ignored, and for moderate number of iterations some function are taking less time and are not 		being considered. So we are taking 50,000 iteration to get clear picture of function which are being called in program.
-<br>2. In this mode for 50,000 iterations SolveVelocityConstraints function in b2ContactSolver class is taking maximum time nearly 	   50\% in every iteration.
-<br>3. SolveVelocityConstraints is taking maximux time because at every step it has to calculate the velocity vectors of each and 		every body involved in the simulation by applying laws of collision and solving the velocties according to them.
-<br>4. The remaining funcitons like Step, SolvePositionConstraits, TimeOfImpact take nearly same time in every iteration.
+1. For very smaller number of iterations we are getting erroneous data. This is happening because some funcitons are taking very less time and are being ignored, and for moderate number of iterations some function are taking less time and are not 		being considered. So we are taking 10,000 iteration to get clear picture of function which are being called in program.
+<br>2. In this mode for 10,000 iterations SolveVelocityConstraints function in b2RevoluteJoint class is taking maximum time in every iteration.
+<br>3. SolveVelocityConstraints is taking maximum time because at every step it has to calculate the angular velocities of each and every revolute joint connecting bodies involved in the simulation by applying laws and solving the angular velocties according to them.
+<br>4. The remaining funcitons like SolvePositionConstraits, TimeOfImpact and some maths functions to solve vector constraints take nearly same time in every iteration.
 <br><img src='release.png'></img>
 
 <h3>Inferences from Debug profiling mode Graph</h3>
-1. For very smaller number of iterations we are getting erroneous data. This is happening because some funcitons are taking 		very less time and are being ignored, and from moderate number of iteration we are getting valid data because this is Debug 	profiling mode and we are not using any optimizing compiler option so we are able to see all function calls which were made
+1. For very smaller number of iterations we are getting erroneous data. This is happening because some funcitons are taking very less time and are being ignored, and from moderate number of iteration we are getting valid data because this is Debug 	profiling mode and we are not using any optimizing compiler option so we are able to see all function calls which were made
 <br>in the program and were are getting significant noticable amount of time for each function. Hence only moderate number of iteration are required for this.
-2. In this mode for SolveVelocityConstraints function in b2ContactSolver class is taking maximum time nearly 	   50\% in every iteration.
-<br>3. SolveVelocityConstraints is taking maximux time because at every step it has to calculate the velocity vectors of each and 		every body involved in the simulation by applying laws of collision and solving the velocties according to them.
-<br>4. The remaining funcitons like Step, SolvePositionConstraits, TimeOfImpact take nearly same time in every iteration.
+2. In this mode SolveVelocityConstraints in b2RevoluteJoint class and operator functions for solving vector constraints are taking maximum time in every iteration.
+<br>3. SolveVelocityConstraints is taking maximum time because at every step it has to calculate the angular velocities of each and and every revolute joint connecting bodies involved in the simulation by applying laws and solving the angular velocties according to them.
+<br>4. The remaining funcitons like Step, SolvePositionConstraits, TimeOfImpact, and some maths function to solve vector constraints take nearly same time in every iteration.
 <br>5. In this we can see the relationship between callee-caller ie. the functions which are invoked by calling a parent function.
 <br>From this we can also identify the amount of time and resources used by child functions. This helps in identifying which subfunction calls taking more time and we can reduce them.
 6. Note that coloring of blocks are assigned according to usage of time and arrows point to all function calls inside a parent
@@ -83,19 +85,20 @@ We have generated all these plots using GNU plot
 
 <h2>Timing Differences in Release and Debug profiling modes</h2>
 <h3>Release Profiling Mode</h3>
-Number of Iterations: 50000
-<br>Average time per step is 0.202182 ms
-<br>Average time for collisions is 0.002808 ms
-<br>Average time for velocity updates is 0.020555 ms
-<br>Average time for position updates is 0.107513 ms
+Number of Iterations: 10000
+<br>Average time per step is 0.103124 ms
+<br>Average time for collisions is 0.003853 ms
+<br>Average time for velocity updates is 0.023186 ms
+<br>Average time for position updates is 0.033141 ms
+<br>Total loop time is 1075.557129
 <br><h3>Debug Profiling Mode</h3>
-Number of Iterations: 50000
-<br>Average time per step is 1.022796 ms
-<br>Average time for collisions is 0.026108 ms
-<br>Average time for velocity updates is 0.199134 ms
-<br>Average time for position updates is 0.407137 ms
-<br>
-From the above data we can see that time when compiled with Release profiling mode takes less time than Debug profiling mode as expected.Read more about profiling here
+Number of Iterations: 10000
+<br>Average time per step is 0.771601 ms
+<br>Average time for collisions is 0.037923 ms
+<br>Average time for velocity updates is 0.229691 ms
+<br>Average time for position updates is 0.158478 ms
+<br>Total loop time is 7800.75097
+<br>From the above data we can see that time when compiled with Release profiling mode takes less time than Debug profiling mode as expected.Read more about profiling here
 <h1>What Makes Our Design Interesting</h1>
 Our design shows process in which cranes work.These type of arms are very crucial in many industries and many machines for example in assembly lines and cranes.In this simple and funny design user can control the machine using keys.This makes our desing interesting.
 <h1>Conclusion</h1>
